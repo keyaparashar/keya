@@ -1,0 +1,541 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>himalayas — keya’s</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #101010;
+  color: #f7f6f2;
+  font-family: 'Inter', sans-serif;
+  text-transform: lowercase;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* HEADER — keep consistent with homepage */
+
+.site-header {
+  width: 100%;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  background: rgba(16,16,16,.72);
+}
+
+.header-inner {
+  max-width: 1280px;
+  width: calc(100% - 48px);
+  min-height: 96px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.wordmark {
+  font-family: 'Syne', sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: .9;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  letter-spacing: .08em;
+}
+
+.coordinates {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c92a2a;
+}
+
+.nav {
+  display: flex;
+  gap: 34px;
+  font-size: 12px;
+  letter-spacing: .18em;
+}
+
+.clock { color: white; font-weight: 500; }
+
+/* ALBUM INTRO */
+
+main {
+  max-width: 1280px;
+  width: calc(100% - 48px);
+  margin: auto;
+  padding: 55px 0 80px;
+}
+
+.album-top {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.kicker, .counter, .caption {
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: rgba(255,255,255,.58);
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -.055em;
+  line-height: .95;
+  margin: 10px 0 0;
+}
+
+/* PHOTO VIEWER */
+
+.viewer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px;
+  gap: 18px;
+}
+
+.stage {
+  position: relative;
+  height: min(66vw, 690px);
+  min-height: 400px;
+  background: #171717;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.1);
+  overflow: hidden;
+}
+
+.stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 50%;
+  background: rgba(0,0,0,.5);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.prev { left: 18px; }
+.next { right: 18px; }
+
+/* THUMBNAILS */
+
+.thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 690px;
+  overflow-y: auto;
+}
+
+.thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid transparent;
+  background: #222;
+  opacity: .5;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.thumb.active {
+  opacity: 1;
+  border-color: white;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* CAPTION */
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.15);
+}
+
+.hint {
+  font-size: 10px;
+  letter-spacing: .12em;
+  color: rgba(255,255,255,.42);
+}
+
+.back {
+  display: inline-block;
+  margin-top: 36px;
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: rgba(255,255,255,.65);
+}
+
+/* FULLSCREEN ZOOM */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgba(0,0,0,.97);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 5vw;
+}
+
+.lightbox.open { display: flex; }
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform .15s ease;
+}
+
+.close {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: none;
+  border: 0;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.zoom-controls {
+  position: absolute;
+  bottom: 24px;
+  display: flex;
+  gap: 10px;
+}
+
+.zoom-controls button {
+  background: #202020;
+  color: white;
+  border: 1px solid #555;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:760px) {
+  .header-inner {
+    min-height: 76px;
+    width: calc(100% - 36px);
+    gap: 14px;
+  }
+
+  .wordmark { font-size: 29px; }
+  .location { display: none; }
+  .nav { gap: 18px; font-size: 10px; }
+
+  main {
+    width: calc(100% - 36px);
+    padding-top: 35px;
+  }
+
+  .album-top {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .viewer {
+    grid-template-columns: 1fr;
+  }
+
+  .stage {
+    height: 68vh;
+    min-height: 360px;
+  }
+
+  .thumbs {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .thumb {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+  }
+
+  .info-row {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header class="site-header">
+  <div class="header-inner">
+
+    <a class="wordmark" href="../index.html">keya’s</a>
+
+    <div class="location">
+      <span class="coordinates">
+        <span class="dot"></span>
+        19.0760° n, 72.8777° e
+      </span>
+
+      <span>|</span>
+
+      <span>
+        <span class="clock" id="nav-clock">--:--:--</span> ist
+      </span>
+    </div>
+
+    <nav class="nav">
+      <a href="../index.html#words">words.</a>
+      <a href="../index.html#archive">archive.</a>
+    </nav>
+
+  </div>
+</header>
+
+<main>
+
+  <!-- ALBUM TITLE -->
+
+  <div class="album-top">
+    <div>
+      <div class="kicker">photographic archive / 01</div>
+      <h1>himalayas.</h1>
+    </div>
+
+    <div class="counter">23 photographs / 2026</div>
+  </div>
+
+  <!-- PHOTO VIEWER -->
+
+  <section class="viewer">
+
+    <div>
+      <div class="stage">
+
+        <button class="arrow prev" onclick="changePhoto(-1)">‹</button>
+
+        <img id="main-image"
+             src="../assets/albums/himalayas/01.jpg"
+             alt="Himalayas photograph"
+             onclick="openZoom()">
+
+        <button class="arrow next" onclick="changePhoto(1)">›</button>
+
+      </div>
+
+      <div class="info-row">
+        <div class="caption" id="caption">plate 01 / 023</div>
+        <div class="hint">click photograph to enlarge · use ← → to navigate</div>
+      </div>
+    </div>
+
+    <!-- THUMBNAILS -->
+
+    <div class="thumbs" id="thumbs"></div>
+
+  </section>
+
+  <a class="back" href="../index.html#archive">← back to archive</a>
+
+</main>
+
+<!-- ZOOM VIEW -->
+
+<div class="lightbox" id="lightbox">
+
+  <button class="close" onclick="closeZoom()">×</button>
+
+  <img id="zoom-image" src="../assets/albums/himalayas/01.jpg">
+
+  <div class="zoom-controls">
+    <button onclick="zoom(-0.5)">−</button>
+    <button onclick="resetZoom()">reset</button>
+    <button onclick="zoom(0.5)">+</button>
+  </div>
+
+</div>
+
+<script>
+
+/* CHANGE YOUR PHOTOS HERE */
+
+const album = {
+  name: "himalayas",
+  folder: "../assets/albums/himalayas/",
+  photos: [
+    "bom - del.jpg",
+    "fqs 2026-06-26 103252D9D26A759A23.jpg",
+    "original 2026-06-30 1013317D051F92EC52.jpg",
+    "original 2026-07-01 062227E1724A8D80D0.jpg",
+    "fqs 2026-07-02 1041506AFBC7E027FB.jpg",
+    "fqs 2026-06-27 2117347EE8FDCB7E76.jpg",
+    "fqs 2026-07-02 192307FB94CCC601DE.jpg",
+    "fqs 2026-07-01 172953CCF541D87563.jpg",
+    "fqs 2026-07-01 191045EC60DB9273F4.jpg",
+    "fqs 2026-06-29 0855228FD145B455C4.jpg",
+    "fqs 2026-06-22 15510425CC238E3B32.jpg",
+    "fqs 2026-06-29 144111AEBFED1AC4DD.jpg",
+    "fqs 2026-06-29 102855C52FDA2B5A0D.jpg",
+    "b1a53f07-3ac9-4d94-beb7-0644dfda2e4a.jpg",
+     "fqs 2026-06-29 122035568494070148.jpg",
+    "dhalf 2026-07-03 15555243F35EE2B0EF.jpg",
+    "original 2026-06-29 1423552E832FFF8154.jpg",
+    "fqs 2026-06-25 1534384CE469B8C3CD.jpg",
+    "IMG_4108.jpg",
+    "fqs 2026-07-04 054018D8CA3E06CB26.jpg"
+  ]
+};
+
+let current = 0;
+let scale = 1;
+
+const mainImage = document.getElementById("main-image");
+const zoomImage = document.getElementById("zoom-image");
+const caption = document.getElementById("caption");
+const thumbs = document.getElementById("thumbs");
+const lightbox = document.getElementById("lightbox");
+
+/* CREATE THUMBNAILS */
+
+album.photos.forEach((photo, i) => {
+  const button = document.createElement("button");
+  button.className = "thumb";
+  button.innerHTML = `<img src="${album.folder + photo}" alt="Photograph ${i + 1}">`;
+
+  button.onclick = () => showPhoto(i);
+
+  thumbs.appendChild(button);
+});
+
+function showPhoto(i) {
+  current = (i + album.photos.length) % album.photos.length;
+
+  const src = album.folder + album.photos[current];
+
+  mainImage.src = src;
+  zoomImage.src = src;
+
+  caption.textContent =
+    `plate ${String(current + 1).padStart(2, "0")} / ${String(album.photos.length).padStart(3, "0")}`;
+
+  document.querySelectorAll(".thumb").forEach((thumb, index) => {
+    thumb.classList.toggle("active", index === current);
+  });
+
+  document.querySelectorAll(".thumb")[current]
+    .scrollIntoView({ block: "nearest", inline: "nearest" });
+}
+
+function changePhoto(direction) {
+  showPhoto(current + direction);
+}
+
+/* ZOOM */
+
+function openZoom() {
+  scale = 1;
+  resetZoom();
+  lightbox.classList.add("open");
+}
+
+function closeZoom() {
+  lightbox.classList.remove("open");
+}
+
+function zoom(amount) {
+  scale = Math.max(1, Math.min(4, scale + amount));
+  zoomImage.style.transform = `scale(${scale})`;
+}
+
+function resetZoom() {
+  scale = 1;
+  zoomImage.style.transform = "scale(1)";
+}
+
+/* KEYBOARD CONTROLS */
+
+document.addEventListener("keydown", event => {
+  if (lightbox.classList.contains("open")) {
+    if (event.key === "Escape") closeZoom();
+    if (event.key === "+") zoom(0.5);
+    if (event.key === "-") zoom(-0.5);
+  } else {
+    if (event.key === "ArrowLeft") changePhoto(-1);
+    if (event.key === "ArrowRight") changePhoto(1);
+  }
+});
+
+/* LIVE IST CLOCK */
+
+function updateClock() {
+  document.getElementById("nav-clock").textContent =
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    }).format(new Date());
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+showPhoto(0);
+
+</script>
+
+</body>
+</html>
